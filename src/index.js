@@ -21,8 +21,9 @@ var ProductRow = React.createClass({
 var ProductTable = React.createClass({
     render: function () {
         var rows = [];
+        console.log(this.props.products.length);
         this.props.products.forEach(function (product) {
-            rows.push(<ProductRow product={product} key={product.name}/>);
+            rows.push(<ProductRow product={product} key={product.code}/>);
         });
         return (
             <table>
@@ -110,7 +111,7 @@ var PRODUCTS = [
         ]
     },
     {
-        "code": "123456",
+        "code": "123459",
         "name": "Fish Sandwitch",
         "price": 4.55,
         "unit": 25,
