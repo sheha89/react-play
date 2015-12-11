@@ -1,45 +1,39 @@
 import React  from 'react'
 import ReactDOM from 'react-dom'
 
-var ProductCategoryRow = React.createClass({
-    render: function() {
-        return (<tr><th colSpan="2">{this.props.category}</th></tr>);
-    }
-});
 
 var ProductRow = React.createClass({
-    render: function() {
-        var name = this.props.product.stocked ?
-            this.props.product.name :
-            <span style={{color: 'red'}}>
-                {this.props.product.name}
-            </span>;
+    render: function () {
         return (
             <tr>
-                <td>{name}</td>
+                <td>{this.props.product.name}</td>
+                <td>{this.props.product.code}</td>
                 <td>{this.props.product.price}</td>
+                <td>{this.props.product.unit}</td>
+                <td>{this.props.product.revenue.amount}</td>
+                <td>{this.props.product.revenue.tot}</td>
             </tr>
         );
     }
 });
 
+
 var ProductTable = React.createClass({
-    render: function() {
+    render: function () {
         var rows = [];
-        var lastCategory = null;
-        this.props.products.forEach(function(product) {
-            if (product.category !== lastCategory) {
-                rows.push(<ProductCategoryRow category={product.category} key={product.category} />);
-            }
-            rows.push(<ProductRow product={product} key={product.name} />);
-            lastCategory = product.category;
+        this.props.products.forEach(function (product) {
+            rows.push(<ProductRow product={product} key={product.name}/>);
         });
         return (
             <table>
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Price</th>
+                    <th>ITEM</th>
+                    <th>CODE</th>
+                    <th>PRICE</th>
+                    <th>UNITS</th>
+                    <th>REVENUE</th>
+                    <th>%TOT</th>
                 </tr>
                 </thead>
                 <tbody>{rows}</tbody>
@@ -48,27 +42,12 @@ var ProductTable = React.createClass({
     }
 });
 
-var SearchBar = React.createClass({
-    render: function() {
-        return (
-            <form>
-                <input type="text" placeholder="Search..." />
-                <p>
-                    <input type="checkbox" />
-                    {' '}
-                    Only show products in stock
-                </p>
-            </form>
-        );
-    }
-});
 
 var FilterableProductTable = React.createClass({
-    render: function() {
+    render: function () {
         return (
             <div>
-                <SearchBar />
-                <ProductTable products={this.props.products} />
+                <ProductTable products={this.props.products}/>
             </div>
         );
     }
@@ -76,15 +55,82 @@ var FilterableProductTable = React.createClass({
 
 
 var PRODUCTS = [
-    {category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football'},
-    {category: 'Sporting Goods', price: '$9.99', stocked: true, name: 'Baseball'},
-    {category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball'},
-    {category: 'Electronics', price: '$99.99', stocked: true, name: 'iPod Touch'},
-    {category: 'Electronics', price: '$399.99', stocked: false, name: 'iPhone 5'},
-    {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7'}
+    {
+        "code": "123456",
+        "name": "Fish Sandwitch",
+        "price": 5.55,
+        "unit": 123,
+        "revenue": {
+            "amount": 682.65,
+            "tot": 6.5,
+            "growth": 0
+        },
+        "links": [
+            {
+                "rel": "self",
+                "href": "https://api.apptizer.io/reports/productdetails/123456",
+                "method": "GET"
+            }
+        ]
+    },
+    {
+        "code": "123457",
+        "name": "Chichen Sandwitch",
+        "price": 4.55,
+        "unit": 100,
+        "revenue": {
+            "amount": 655.00,
+            "tot": 4.5,
+            "growth": 0
+        },
+        "links": [
+            {
+                "rel": "self",
+                "href": "https://api.apptizer.io/reports/productdetails/123457",
+                "method": "GET"
+            }
+        ]
+    },
+    {
+        "code": "123458",
+        "name": "Soup & Sandwitch",
+        "price": 8.55,
+        "unit": 50,
+        "revenue": {
+            "amount": 427.50,
+            "tot": 3.5,
+            "growth": 0
+        },
+        "links": [
+            {
+                "rel": "self",
+                "href": "https://api.apptizer.io/reports/productdetails/123458",
+                "method": "GET"
+            }
+        ]
+    },
+    {
+        "code": "123456",
+        "name": "Fish Sandwitch",
+        "price": 4.55,
+        "unit": 25,
+        "revenue": {
+            "amount": 113.75,
+            "tot": 3.0,
+            "growth": 0
+        },
+        "links": [
+            {
+                "rel": "self",
+                "href": "https://api.apptizer.io/reports/productdetails/123456",
+                "method": "GET"
+            }
+        ]
+    }
 ];
 
+
 ReactDOM.render(
-    <FilterableProductTable products={PRODUCTS} />,
+    <FilterableProductTable products={PRODUCTS}/>,
     document.getElementById('root')
 );
