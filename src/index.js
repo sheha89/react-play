@@ -1,39 +1,90 @@
 import React  from 'react'
 import ReactDOM from 'react-dom'
 
-var TodoList = React.createClass({
+var ProductCategoryRow = React.createClass({
     render: function() {
-        var createItem = function(item) {
-            return <li key={item.id}>{item.text}</li>;
-        };
-        return <ul>{this.props.items.map(createItem)}</ul>;
+        return (<tr><th colSpan="2">{this.props.category}</th></tr>);
     }
 });
-var TodoApp = React.createClass({
-    getInitialState: function() {
-        return {items: [], text: ''};
-    },
-    onChange: function(e) {
-        this.setState({text: e.target.value});
-    },
-    handleSubmit: function(e) {
-        e.preventDefault();
-        var nextItems = this.state.items.concat([{text: this.state.text, id: Date.now()}]);
-        var nextText = '';
-        this.setState({items: nextItems, text: nextText});
-    },
+
+var ProductRow = React.createClass({
+    render: function() {
+        var name = this.props.product.stocked ?
+            this.props.product.name :
+            <span style={{color: 'red'}}>
+                {this.props.product.name}
+            </span>;
+        return (
+            <tr>
+                <td>{name}</td>
+                <td>{this.props.product.price}</td>
+            </tr>
+        );
+    }
+});
+
+var ProductTable = React.createClass({
+    render: function() {
+        var rows = [];
+        var lastCategory = null;
+        this.props.products.forEach(function(product) {
+            if (product.category !== lastCategory) {
+                rows.push(<ProductCategoryRow category={product.category} key={product.category} />);
+            }
+            rows.push(<ProductRow product={product} key={product.name} />);
+            lastCategory = product.category;
+        });
+        return (
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+            </table>
+        );
+    }
+});
+
+var SearchBar = React.createClass({
+    render: function() {
+        return (
+            <form>
+                <input type="text" placeholder="Search..." />
+                <p>
+                    <input type="checkbox" />
+                    {' '}
+                    Only show products in stock
+                </p>
+            </form>
+        );
+    }
+});
+
+var FilterableProductTable = React.createClass({
     render: function() {
         return (
             <div>
-                <h3>TODO</h3>
-                <TodoList items={this.state.items} />
-                <form onSubmit={this.handleSubmit}>
-                    <input onChange={this.onChange} value={this.state.text} />
-                    <button>{'Add #' + (this.state.items.length + 1)}</button>
-                </form>
+                <SearchBar />
+                <ProductTable products={this.props.products} />
             </div>
         );
     }
 });
 
-ReactDOM.render(<TodoApp />, document.getElementById('root'));
+
+var PRODUCTS = [
+    {category: 'Sporting Goods', price: '$49.99', stocked: true, name: 'Football'},
+    {category: 'Sporting Goods', price: '$9.99', stocked: true, name: 'Baseball'},
+    {category: 'Sporting Goods', price: '$29.99', stocked: false, name: 'Basketball'},
+    {category: 'Electronics', price: '$99.99', stocked: true, name: 'iPod Touch'},
+    {category: 'Electronics', price: '$399.99', stocked: false, name: 'iPhone 5'},
+    {category: 'Electronics', price: '$199.99', stocked: true, name: 'Nexus 7'}
+];
+
+ReactDOM.render(
+    <FilterableProductTable products={PRODUCTS} />,
+    document.getElementById('root')
+);
